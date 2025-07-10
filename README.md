@@ -2,14 +2,6 @@
 
 A standalone tool for extracting clean lineart from images using MangaNinjia's LineAnimeDetector. Works with any image size without resolution constraints.
 
-## Features
-
-- ✨ **Any Resolution**: No 512x512 size limitation
-- 🎯 **High Quality**: AI-powered lineart detection
-- 🔧 **Configurable**: Adjustable threshold and noise filtering
-- 🚀 **Fast**: GPU acceleration with CUDA support
-- 📦 **Standalone**: Easy installation and deployment
-
 ## Installation
 
 ### Method 1: Conda (Recommended)
