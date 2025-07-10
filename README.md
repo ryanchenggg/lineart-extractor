@@ -85,13 +85,6 @@ extract_lineart(
     apply_morphology=True   # Remove noise
 )
 ```
-
-## Examples
-
-| Input | Output |
-|-------|--------|
-| ![Input](examples/input/sample.jpg) | ![Output](examples/output/sample_lineart.png) |
-
 ## Models
 
 Two pre-trained models are available:
