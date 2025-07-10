@@ -1,6 +1,6 @@
 # Lineart Extractor
 
-A standalone tool for extracting clean lineart from images using MangaNinjia's LineAnimeDetector. Works with any image size without resolution constraints.
+A standalone tool for extracting clean lineart from images using LineAnimeDetector from ControlNet. Works with any image size without resolution constraints.
 
 ## Installation
 
