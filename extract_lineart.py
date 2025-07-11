@@ -58,8 +58,17 @@ def extract_lineart(input_path, output_path, model_dir=None, coarse=False, thres
     
     print(f"Processing image: {input_path} ({image.shape[1]}x{image.shape[0]})")
     
+    # Store original dimensions
+    original_height, original_width = image.shape[:2]
+    
     # Extract lineart (no resize needed - works with any size)
     lineart = detector(image, coarse=coarse)
+    
+    # Check if output size matches input size
+    if lineart.shape != (original_height, original_width):
+        print(f"Size mismatch detected: {original_width}x{original_height} -> {lineart.shape[1]}x{lineart.shape[0]}")
+        print(f"Resizing lineart to match original dimensions...")
+        lineart = cv2.resize(lineart, (original_width, original_height), interpolation=cv2.INTER_LANCZOS4)
     
     # Convert to binary image to filter noise
     _, binary_lineart = cv2.threshold(lineart, threshold, 255, cv2.THRESH_BINARY)
