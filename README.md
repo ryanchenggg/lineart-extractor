@@ -122,3 +122,8 @@ python extract_lineart.py anime.jpg lineart_rgb.png --format rgb
 # RGBA output (transparent background for overlays)
 python extract_lineart.py anime.jpg lineart_rgba.png --format rgba
 ```
+
+## TODO
+
+- [ ] **Enhanced Morphology Configuration**: Allow users to specify different morphological operations and kernel sizes for noise removal (currently limited to 3x3 opening operation)
+- [ ] **Morphology Strategy Testing**: Implement and evaluate different noise removal strategies (erosion, dilation, opening, closing, gradient operations) with various kernel sizes to determine optimal configurations for different image types
