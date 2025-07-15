@@ -36,8 +36,14 @@ python models/download_models.py
 ## Quick Start
 
 ```bash
-# Basic usage
+# Basic usage (binary/grayscale output)
 python extract_lineart.py input.jpg output.png
+
+# RGB format output (3-channel)
+python extract_lineart.py input.jpg output.png --format rgb
+
+# RGBA format output (4-channel with transparency)
+python extract_lineart.py input.jpg output.png --format rgba
 
 # With custom threshold
 python extract_lineart.py input.jpg output.png --threshold 100
@@ -65,6 +71,7 @@ Options:
   --coarse            Use coarse model for faster processing
   --threshold INT     Binary threshold 0-255 (default: 127)
   --no-morphology     Skip morphological noise removal
+  --format FORMAT     Output format: binary, rgb, rgba (default: binary)
   -h, --help          Show help message
 ```
 
@@ -82,7 +89,8 @@ extract_lineart(
     output_path='output.png',
     coarse=False,           # Use fine model
     threshold=127,          # Binary threshold
-    apply_morphology=True   # Remove noise
+    apply_morphology=True,  # Remove noise
+    output_format='binary'  # Output format: 'binary', 'rgb', 'rgba'
 )
 ```
 ## Models
@@ -93,3 +101,24 @@ Two pre-trained models are available:
 - **sk_model2.pth** (44.7 MB): Coarse model for faster processing
 
 Models are automatically downloaded from [HuggingFace Hub](https://huggingface.co/lllyasviel/Annotators).
+
+## Output Formats
+
+The tool supports three output formats:
+
+- **binary** (default): Single-channel grayscale image with white background and black lines
+- **rgb**: 3-channel RGB image with white background and black lines  
+- **rgba**: 4-channel RGBA image with transparent background and black lines
+
+### Format Examples
+
+```bash
+# Binary output (traditional)
+python extract_lineart.py anime.jpg lineart_binary.png --format binary
+
+# RGB output (for compatibility with RGB workflows)
+python extract_lineart.py anime.jpg lineart_rgb.png --format rgb
+
+# RGBA output (transparent background for overlays)
+python extract_lineart.py anime.jpg lineart_rgba.png --format rgba
+```

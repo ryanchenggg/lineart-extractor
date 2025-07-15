@@ -19,7 +19,7 @@ import cv2
 sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
 from annotator.lineart import LineartDetector
 
-def extract_lineart(input_path, output_path, model_dir=None, coarse=False, threshold=127, apply_morphology=True):
+def extract_lineart(input_path, output_path, model_dir=None, coarse=False, threshold=127, apply_morphology=True, output_format='binary'):
     """
     Extract lineart from an image using LineAnimeDetector
     
@@ -30,6 +30,7 @@ def extract_lineart(input_path, output_path, model_dir=None, coarse=False, thres
         coarse: Use coarse model (sk_model2.pth) vs fine model (sk_model.pth)
         threshold: Threshold for binary conversion (0-255)
         apply_morphology: Apply morphological opening to remove noise
+        output_format: Output format ('binary', 'rgb', 'rgba')
     """
     # Default model directory
     if model_dir is None:
@@ -83,9 +84,31 @@ def extract_lineart(input_path, output_path, model_dir=None, coarse=False, thres
     # Create output directory if it doesn't exist
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     
+    # Convert to desired output format
+    if output_format.lower() == 'binary':
+        final_output = cleaned_lineart
+        print(f"Binary lineart saved to: {output_path}")
+    elif output_format.lower() == 'rgb':
+        # Convert single channel to RGB (3 channels)
+        final_output = cv2.cvtColor(cleaned_lineart, cv2.COLOR_GRAY2RGB)
+        print(f"RGB lineart saved to: {output_path}")
+    elif output_format.lower() == 'rgba':
+        # Convert single channel to RGBA (4 channels)
+        # Create alpha channel: white becomes transparent, black stays opaque
+        alpha_channel = 255 - cleaned_lineart  # Invert: black lines = opaque (255), white bg = transparent (0)
+        rgb_lineart = cv2.cvtColor(cleaned_lineart, cv2.COLOR_GRAY2RGB)
+        final_output = cv2.merge([rgb_lineart[:,:,0], rgb_lineart[:,:,1], rgb_lineart[:,:,2], alpha_channel])
+        print(f"RGBA lineart saved to: {output_path}")
+    else:
+        raise ValueError(f"Unsupported output format: {output_format}. Use 'binary', 'rgb', or 'rgba'")
+    
     # Save result
-    cv2.imwrite(output_path, cleaned_lineart)
-    print(f"Binary lineart saved to: {output_path}")
+    if output_format.lower() == 'rgba':
+        # Use PIL for RGBA PNG saving
+        pil_image = Image.fromarray(final_output, 'RGBA')
+        pil_image.save(output_path)
+    else:
+        cv2.imwrite(output_path, final_output)
 
 def main():
     parser = argparse.ArgumentParser(
@@ -96,6 +119,8 @@ Examples:
     python extract_lineart.py input.jpg output.png
     python extract_lineart.py input.jpg output.png --coarse --threshold 100
     python extract_lineart.py input.jpg output.png --no-morphology
+    python extract_lineart.py input.jpg output.png --format rgb
+    python extract_lineart.py input.jpg output.png --format rgba
         """
     )
     parser.add_argument("input", help="Input image path")
@@ -108,6 +133,8 @@ Examples:
                        help="Threshold for binary conversion (0-255, default: 127)")
     parser.add_argument("--no-morphology", action="store_true",
                        help="Skip morphological noise removal")
+    parser.add_argument("--format", choices=['binary', 'rgb', 'rgba'], default='binary',
+                       help="Output format: binary (grayscale), rgb (3-channel), rgba (4-channel with transparency)")
     
     args = parser.parse_args()
     
@@ -118,7 +145,8 @@ Examples:
             args.model_dir,
             args.coarse, 
             args.threshold,
-            not args.no_morphology
+            not args.no_morphology,
+            args.format
         )
     except Exception as e:
         print(f"Error: {e}")
