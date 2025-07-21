@@ -70,8 +70,8 @@ python extract_lineart.py input.jpg output.png --threshold 100
 # Use coarse model for faster processing
 python extract_lineart.py input.jpg output.png --coarse
 
-# Skip noise removal for raw output
-python extract_lineart.py input.jpg output.png --no-morphology
+# Enable noise removal (disabled by default)
+python extract_lineart.py input.jpg output.png --morphology
 ```
 
 #### Simple Pixel-based Extraction
@@ -111,8 +111,8 @@ Arguments:
 Options:
   --model-dir DIR      Path to model directory (default: ./models)
   --coarse            Use coarse model for faster processing
-  --threshold INT     Binary threshold 0-255 (default: 127)
-  --no-morphology     Skip morphological noise removal
+  --threshold INT     Binary threshold 0-255 (default: 200)
+  --morphology        Enable morphological noise removal
   --format FORMAT     Output format: binary, rgb, rgba (default: binary)
   -h, --help          Show help message
 ```
@@ -146,8 +146,8 @@ extract_lineart(
     input_path='input.jpg',
     output_path='output.png',
     coarse=False,           # Use fine model
-    threshold=127,          # Binary threshold
-    apply_morphology=True,  # Remove noise
+    threshold=200,          # Binary threshold
+    apply_morphology=False, # Remove noise (disabled by default)
     output_format='binary'  # Output format: 'binary', 'rgb', 'rgba'
 )
 ```
