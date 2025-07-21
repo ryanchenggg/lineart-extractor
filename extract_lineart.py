@@ -19,8 +19,8 @@ import cv2
 sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
 from annotator.lineart import LineartDetector
 
-def extract_lineart(input_path, output_path, model_dir=None, coarse=False, threshold=127, apply_morphology=True, output_format='binary'):
-    """
+def extract_lineart(input_path, output_path, model_dir=None, coarse=False, threshold=200, apply_morphology=False, output_format='binary'):
+    """ 
     Extract lineart from an image using LineAnimeDetector
     
     Args:
@@ -29,7 +29,7 @@ def extract_lineart(input_path, output_path, model_dir=None, coarse=False, thres
         model_dir: Path to model directory (default: ./models)
         coarse: Use coarse model (sk_model2.pth) vs fine model (sk_model.pth)
         threshold: Threshold for binary conversion (0-255)
-        apply_morphology: Apply morphological opening to remove noise
+        apply_morphology: Apply morphological opening to remove noise (default: False)
         output_format: Output format ('binary', 'rgb', 'rgba')
     """
     # Default model directory
@@ -64,7 +64,7 @@ def extract_lineart(input_path, output_path, model_dir=None, coarse=False, thres
     
     # Extract lineart (no resize needed - works with any size)
     lineart = detector(image, coarse=coarse)
-    
+
     # Check if output size matches input size
     if lineart.shape != (original_height, original_width):
         print(f"Size mismatch detected: {original_width}x{original_height} -> {lineart.shape[1]}x{lineart.shape[0]}")
@@ -129,10 +129,10 @@ Examples:
                        help="Path to model directory (default: ./models)")
     parser.add_argument("--coarse", action="store_true", 
                        help="Use coarse model (sk_model2.pth) for faster processing")
-    parser.add_argument("--threshold", type=int, default=127,
-                       help="Threshold for binary conversion (0-255, default: 127)")
-    parser.add_argument("--no-morphology", action="store_true",
-                       help="Skip morphological noise removal")
+    parser.add_argument("--threshold", type=int, default=200,
+                       help="Threshold for binary conversion (0-255, default: 200)")
+    parser.add_argument("--morphology", action="store_true",
+                       help="Enable morphological noise removal")
     parser.add_argument("--format", choices=['binary', 'rgb', 'rgba'], default='binary',
                        help="Output format: binary (grayscale), rgb (3-channel), rgba (4-channel with transparency)")
     
@@ -145,7 +145,8 @@ Examples:
             args.model_dir,
             args.coarse, 
             args.threshold,
-            not args.no_morphology,
+            # apply morphology only if --morphology specified
+            args.morphology,
             args.format
         )
     except Exception as e:
