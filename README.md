@@ -27,7 +27,7 @@ python models/download_models.py
 
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/lineart-extractor.git
+git clone https://github.com/ryanchenggg/lineart-extractor
 cd lineart-extractor
 
 # Install dependencies
