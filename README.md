@@ -12,7 +12,7 @@ Works with any image size without resolution constraints.
 
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/lineart-extractor.git
+git clone https://github.com/ryanchenggg/lineart-extractor
 cd lineart-extractor
 
 # Create conda environment
